@@ -53,7 +53,7 @@ class OpenAIProvider(AIProvider):
         messages = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
-        if prompt:
+        if prompt and snippet:
             messages.append({"role": "user", "content": prompt})
         if text:
             messages.append({"role": "user", "content": f"Text: {text}"})

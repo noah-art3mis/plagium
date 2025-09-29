@@ -1,59 +1,26 @@
-from difflib import SequenceMatcher
-
-import Levenshtein
-
-
-# -------------------------------
-# 1. N-gram Jaccard similarity
-# -------------------------------
-def ngram_similarity(s1, s2, n=3):
-    def ngrams(text, n):
-        tokens = text.lower().split()
-        return set(tuple(tokens[i : i + n]) for i in range(len(tokens) - n + 1))
-
-    ngrams1 = ngrams(s1, n)
-    ngrams2 = ngrams(s2, n)
-
-    intersection = len(ngrams1 & ngrams2)
-    union = len(ngrams1 | ngrams2)
-
-    return intersection / union if union > 0 else 0.0
+import argparse
+from similarity import ngram_similarity, levenshtein_similarity, lcs_similarity
 
 
-# -------------------------------
-# 2. Levenshtein similarity
-# -------------------------------
-def levenshtein_similarity(s1, s2):
-    distance = Levenshtein.distance(s1, s2)
-    max_len = max(len(s1), len(s2))
-    return 1 - distance / max_len if max_len > 0 else 1.0
-
-
-# -------------------------------
-# 3. Longest Common Subsequence (LCS)
-# -------------------------------
-def lcs_similarity(s1, s2):
-    # Using difflib SequenceMatcher (approx LCS)
-    matcher = SequenceMatcher(None, s1, s2)
-    # Fixed: get_matching_blocks() returns tuples (i, j, n), not objects with .size
-    lcs_len = sum(n for i, j, n in matcher.get_matching_blocks())
-    max_len = max(len(s1), len(s2))
-    return lcs_len / max_len if max_len > 0 else 1.0
-
-
-# Alternative simpler approach using ratio():
-# def lcs_similarity(s1, s2):
-#     matcher = SequenceMatcher(None, s1, s2)
-#     return matcher.ratio()
-
-
-def main(s1, s2):
-    print("N-gram similarity:", ngram_similarity(s1, s2, n=3))
-    print("Levenshtein similarity:", levenshtein_similarity(s1, s2))
-    print("LCS similarity:", lcs_similarity(s1, s2))
+def main(file1_path, file2_path):
+    try:
+        with open(file1_path, 'r') as f1, open(file2_path, 'r') as f2:
+            s1 = f1.read()
+            s2 = f2.read()
+            
+        print("N-gram similarity:", ngram_similarity(s1, s2, n=3))
+        print("Levenshtein similarity:", levenshtein_similarity(s1, s2))
+        print("LCS similarity:", lcs_similarity(s1, s2))
+    except FileNotFoundError as e:
+        print(f"Error: Could not find file - {e}")
+    except Exception as e:
+        print(f"Error occurred: {e}")
 
 
 if __name__ == "__main__":
-    s1 = "Artificial intelligence is transforming the world rapidly."
-    s2 = "The world is being transformed quickly by artificial intelligence."
-    main(s1, s2)
+    parser = argparse.ArgumentParser(description='Compare similarity between two text files')
+    parser.add_argument('file1', help='Path to first file')
+    parser.add_argument('file2', help='Path to second file')
+    
+    args = parser.parse_args()
+    main(args.file1, args.file2)
