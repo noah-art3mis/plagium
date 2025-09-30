@@ -1,17 +1,21 @@
 [project]
 name = "plagium"
 version = "0.1.0"
-description = "Add your description here"
+description = "Is this slop? Checking this by checking its distance from a rewritten version of the same text."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "anthropic>=0.68.1",
-    "langchain[anthropic,openai]>=0.3.27",
-    "langgraph>=0.6.8",
+    "langchain>=1.0.0a10",
+    "langchain-anthropic>=0.3.21",
+    "langchain-google-genai>=2.1.12",
+    "langchain-openai>=0.3.33",
     "levenshtein>=0.27.1",
+    "matplotlib>=3.10.6",
     "nltk>=3.9.1",
     "numpy>=2.2.6",
     "openai>=1.109.1",
     "python-dotenv>=1.1.1",
+    "seaborn>=0.13.2",
     "tiktoken>=0.11.0",
 ]
